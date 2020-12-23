@@ -1,7 +1,6 @@
 #include "qstd.h"
 using namespace qstd;
 #include <QList>
-#include "myrandom.h"
 
 static int gene[65];
 static int win_count_player_1 = 1;
