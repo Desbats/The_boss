@@ -153,10 +153,10 @@ int main()
         }
 
         for (i = 0; i < 5; i++){
-            cout<<"Base "<<i+1<<" as "<<base_nb[i]<<" soldiers controled by player "<<base_control[i]<<"\n";
             if (base_control[i] != 0){
                 base_nb[i]++;
             }
+            cout<<"Base "<<i+1<<" as "<<base_nb[i]<<" soldiers controled by player "<<base_control[i]<<"\n";
         }
         if (base_control[2] != 0){
             base_nb[2]++;
