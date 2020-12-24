@@ -78,6 +78,13 @@ int * get_action_player1(int control[], int number[])
     return action;
 }
 
+    if (nb >= 0 and control[start] != control[end]){
+
+    }
+    else if (nb == -2){
+
+    }
+
 void attack(int start, int end, int nb, int new_control, int *control, int *base_nb){
     if (nb >= 0 and control[start] != control[end]){
         if (base_nb[end] < nb){
