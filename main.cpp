@@ -113,7 +113,7 @@ void genome(int *gen){
     int num = 0;
     int index = 0;
     for (i = 0; i < 10; i++){
-        if (gen[5 + i * 6] > num){
+        if (gen[5 + i * 6] < num){
             num = gen[5 + i * 6];
             index = i;
         }
