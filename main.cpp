@@ -2,6 +2,7 @@
 using namespace qstd;
 #include <QList>
 
+
 static int gene[65];
 static int win_count_player_1 = 1;
 static int win_count_player_2 = 1;
@@ -43,22 +44,27 @@ int * get_action_player2(int control[], int number[])
     return action;
 }
 
-int * get_action_player1(int control[], int number[])
+int * get_action_player1(int control[], int number[], int start = -1, int end = -1)
 {
     static int action[4];
     static int ran[4];
     int i;
     int num = 0;
-    for (i = 0; i < 5; i++){
-        if (control[i] == 1 and number[i] != 0){
-            num++;
-            ran[i] = i;
+    if (start == -1){
+        for (i = 0; i < 5; i++){
+            if (control[i] == 1 and number[i] != 0){
+                num++;
+                ran[i] = i;
+            }
         }
+        action[0] = ran[qrand()%num];
+        do{
+            action[1] = qrand()%5;
+        }while(action[0] == action[1]);
+    }else{
+        action[0] = start;
+        action[1] = end;
     }
-    action[0] = ran[qrand()%num];
-    do{
-        action[1] = qrand()%5;
-    }while(action[0] == action[1]);
     action[2] = -1;
     if (number[action[0]] >= number[action[1]]){
         action[2] = number[action[0]];
@@ -86,13 +92,14 @@ void attack(int start, int end, int nb, int new_control, int *control, int *base
         else{
             base_nb[end] = nb - base_nb[end];
         }
+
         base_nb[start] -= nb;
         control[end] = new_control;
-        cout<<"Base "<<(end)+1<<" is attacked by base "<<start+1<<" with "<<(nb)<<" soldiers \n\n";
+        cout<<"Player "<<control[start]<<" : Base "<<(end)+1<<" is attacked by base "<<start+1<<" with "<<(nb)<<" soldiers \n\n";
     }
-    else if (nb == -2){
+    else if (nb == -2 and control[start] == control[end]){
         base_nb[start] += base_nb[end];
-        cout<<"Base "<<(start)+1<<" receive "<<base_nb[end]<<" soldier from base "<<(end)+1<<"\n\n";
+        cout<<"Player "<<control[start]<<" : Base "<<(start)+1<<" receive "<<base_nb[end]<<" soldier from base "<<(end)+1<<"\n\n";
         base_nb[end] = 0;
     }
 }
@@ -133,9 +140,11 @@ int main()
     int *p;
     int *w;
     int i;
-    cout<<"Generation: "<<generation<<" ---------------------------------------------------------\n";
+    cout<<"\n******************************************************************\n";
+    cout<<"************************* Generation: "<<generation<<" **************************\n";
+    cout<<"******************************************************************\n\n";
     while (true){
-        cout<<"Turn n "<<turn<<" ---------------------------------------------------------\n\n";
+        cout<<"---------------------------- Turn n "<<turn<<" ----------------------------\n\n";
         p = get_action_player2(base_control, base_nb);
         attack(*p, *(p+1), *(p+2), *(p+3), &base_control[0], &base_nb[0]);
         if (generation == 1 or gene[1 + turn * 6] == -1){
@@ -143,13 +152,13 @@ int main()
             attack(*w, *(w+1), *(w+2), *(w+3), &base_control[0], &base_nb[0]);
 
             gene[0 + turn * 6] = turn;
+            gene[1 + turn * 6] = *w;
+            gene[2 + turn * 6] = *(w+1);
             gene[5 + turn * 6] = total_soldier(&base_control[0], &base_nb[0], 1);
-            for (i = 0; i < 4; i++){
-                gene[i+1 + turn * 6] = *(w+i);
-            }
         }
         else{
-            attack(gene[1 + turn * 6], gene[2 + turn * 6], gene[3 + turn * 6], gene[4 + turn * 6], &base_control[0], &base_nb[0]);
+            w = get_action_player1(base_control, base_nb, gene[1 + turn * 6], gene[2 + turn * 6]);
+            attack(gene[1 + turn * 6], gene[2 + turn * 6], *(w+2), *(w+3), &base_control[0], &base_nb[0]);
         }
 
         for (i = 0; i < 5; i++){
@@ -157,6 +166,7 @@ int main()
                 base_nb[i]++;
             }
             cout<<"Base "<<i+1<<" as "<<base_nb[i]<<" soldiers controled by player "<<base_control[i]<<"\n";
+
         }
         if (base_control[2] != 0){
             base_nb[2]++;
