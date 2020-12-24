@@ -2,6 +2,12 @@
 using namespace qstd;
 #include <QList>
 
+    if (nb >= 0 and control[start] != control[end]){
+        
+    }
+    else if (nb == -2 and control[start] == control[end]){
+
+    }
 
 static int gene[65];
 static int win_count_player_1 = 1;
